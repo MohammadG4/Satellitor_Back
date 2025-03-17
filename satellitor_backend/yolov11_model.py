@@ -1,13 +1,10 @@
 from collections import defaultdict
-from types import NoneType
 
 import requests
 from satellitor_backend import model,crops
 import cv2
 import numpy as np
 import ee
-from ultralytics import YOLO,SAM
-import os
 
 
 
