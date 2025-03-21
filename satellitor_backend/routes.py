@@ -11,7 +11,9 @@ OUTPUTS_FOLDER = os.path.join(BASE_DIR, 'outputs')
 os.makedirs(INPUTS_FOLDER, exist_ok=True)
 os.makedirs(OUTPUTS_FOLDER, exist_ok=True)
 
-
+@app.route('/')
+def hello():
+    return "hello, from main"
 
 @app.route('/process', methods=['POST','GET'])
 def process():
