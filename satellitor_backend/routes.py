@@ -15,11 +15,13 @@ os.makedirs(OUTPUTS_FOLDER, exist_ok=True)
 
 
 
-def cleanup_files(folder, max_age_seconds=1800):  # 1800 sec = 30 min
+def cleanup_files(folder, max_age_seconds=1800):  
     while True:
         print("Checking to Clean Up Files")
         now = time.time()
         for filename in os.listdir(folder):
+            if filename == "img.png":  
+                continue
             file_path = os.path.join(folder, filename)
             if os.path.isfile(file_path):
                 file_age = now - os.path.getmtime(file_path)
@@ -29,7 +31,7 @@ def cleanup_files(folder, max_age_seconds=1800):  # 1800 sec = 30 min
                         print(f"Deleted {file_path} (age: {file_age}s)")
                     except Exception as e:
                         print(f"Error deleting {file_path}: {e}")
-        time.sleep(600)  # Check every 10 min
+        time.sleep(600)  
 threading.Thread(target=cleanup_files, args=(INPUTS_FOLDER,), daemon=True).start()
 threading.Thread(target=cleanup_files, args=(OUTPUTS_FOLDER,), daemon=True).start()
 
