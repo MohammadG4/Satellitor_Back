@@ -4,12 +4,34 @@ import os
 import uuid
 from satellitor_backend.yolov11_model import get_mask, detect_edges, get_land_properties, get_best_crops, \
     get_Percentage, get_crops, get_fragmentation
+import time
+import threading
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 INPUTS_FOLDER = os.path.join(BASE_DIR, 'inputs')
 OUTPUTS_FOLDER = os.path.join(BASE_DIR, 'outputs')
 os.makedirs(INPUTS_FOLDER, exist_ok=True)
 os.makedirs(OUTPUTS_FOLDER, exist_ok=True)
+
+
+
+def cleanup_files(folder, max_age_seconds=1800):  # 1800 sec = 30 min
+    while True:
+        print("Checking to Clean Up Files")
+        now = time.time()
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            if os.path.isfile(file_path):
+                file_age = now - os.path.getmtime(file_path)
+                if file_age > max_age_seconds:
+                    try:
+                        os.remove(file_path)
+                        print(f"Deleted {file_path} (age: {file_age}s)")
+                    except Exception as e:
+                        print(f"Error deleting {file_path}: {e}")
+        time.sleep(600)  # Check every 10 min
+threading.Thread(target=cleanup_files, args=(INPUTS_FOLDER,), daemon=True).start()
+threading.Thread(target=cleanup_files, args=(OUTPUTS_FOLDER,), daemon=True).start()
 
 @app.route('/')
 def hello():
